@@ -1,0 +1,1461 @@
+/* Alexander Alvarado — Chevrolet Nicaragua | Sistema visual fiel a referencia */
+
+:root {
+  --bg-dark: #1a1a1c;
+  --bg-darker: #0f0f10;
+  --bg: #ffffff;
+  --bg-soft: #f1f1f1;
+  --bg-card: #ededed;
+  --text-on-dark: #ffffff;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.55);
+  --text: #1a1a1c;
+  --text-muted: #6b6b70;
+  --line-dark: rgba(255, 255, 255, 0.12);
+  --line: rgba(0, 0, 0, 0.08);
+
+  --font-display: "Bebas Neue", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "Bebas Neue", "Inter", system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.about-label {
+  font-family: var(--font-heading);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
+/* ============ HERO (DARK) ============ */
+.hero {
+  position: relative;
+  background: var(--bg-dark);
+  color: var(--text-on-dark);
+  padding: 32px 0 0;
+  overflow: hidden;
+}
+
+/* NAV embebido en hero */
+.nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 56px;
+  max-width: 1280px;
+  margin: 0 auto 24px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+.nav-left,
+.nav-right {
+  display: flex;
+  gap: 40px;
+  flex: 1;
+}
+.nav-right {
+  justify-content: flex-end;
+}
+.nav a {
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav a:hover {
+  color: #fff;
+}
+.nav-center {
+  display: flex;
+  justify-content: center;
+}
+.nav-logo {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+.nav-logo svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* HERO becomes a full-viewport slider: backdrop image + left content
+   block + right thumbnail rail + bottom slider controls. */
+.hero {
+  min-height: 100vh;
+  padding: 32px 0 0;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* Gradient overlay — darker on the left (where the title lives) so the
+   white headline always reads, fading toward the right thumbnails. */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.55) 35%,
+      rgba(0, 0, 0, 0.15) 75%,
+      rgba(0, 0, 0, 0.35) 100%
+    ),
+    linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 50%);
+}
+.hero .nav {
+  z-index: 5;
+}
+.hero-stage {
+  position: relative;
+  z-index: 3;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 56px 220px;
+  min-height: calc(100vh - 200px);
+}
+/* hero-content and hero-thumbs are absolutely positioned inside the
+   stage so the larger active card can grow without competing for grid
+   space with the headline column. */
+.hero-content {
+  position: absolute;
+  left: 56px;
+  bottom: 200px;
+  max-width: clamp(440px, 50vw, 760px);
+  z-index: 2;
+}
+.hero-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-left: 60px;
+  position: relative;
+  font-weight: 500;
+}
+.hero-label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 44px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-50%);
+}
+.hero-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(64px, 9vw, 132px);
+  line-height: 0.92;
+  letter-spacing: 0;
+  margin-bottom: 18px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.hero-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.6;
+  max-width: 440px;
+  margin-bottom: 28px;
+}
+.hero-cta {
+  background: #fff;
+  color: var(--bg-dark);
+}
+.hero-cta .btn-pill-icon {
+  background: var(--bg-dark);
+  color: #fff;
+}
+
+/* Bottom-right rail — all hero vehicles. Using margin-right (rather
+   than `gap`) so the active card can collapse both its width AND its
+   trailing margin to 0, letting the rest of the row reflow into the
+   empty slot smoothly via a single CSS transition. */
+.hero-thumbs {
+  position: absolute;
+  right: 0;
+  bottom: 50px;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+}
+/* All cards same size. Margin-right is the inter-card gap. The active
+   vehicle is removed from the DOM entirely (see Hero.jsx) so there is
+   no "is-active" rule here — reordering is driven by FLIP animation
+   from JS, which sets `transform: translateX(...)` inline and lets
+   CSS interpolate it back to identity. */
+.hero-thumb {
+  position: relative;
+  width: clamp(140px, 11vw, 170px);
+  height: clamp(200px, 16vw, 240px);
+  min-width: 0;
+  flex: 0 0 auto;
+  margin-right: 14px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  padding: 0;
+  opacity: 1;
+  transform-origin: center;
+}
+.hero-thumb:last-of-type {
+  margin-right: 0;
+}
+.hero-thumb:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 36px -14px rgba(0, 0, 0, 0.55);
+}
+/* Hand-off phase. The visible "expansion" lives on the new BG overlay
+   (.hero-bg-reveal below) which holds the incoming photo at its native
+   viewport size and animates a radial clip-path from radius 0 → maxR.
+   The card itself just fades out with a small scale dip — a soft exit
+   that reads as the card "passing its energy" into the BG reveal,
+   without any of the awful 20× scaling / pixelation from before. */
+.hero-thumb.is-growing {
+  z-index: 10;
+  pointer-events: none;
+  animation: hero-thumb-handoff 420ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes hero-thumb-handoff {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+}
+
+/* Incoming-BG overlay that rides on top of the static .hero-bg during
+   a transition. The image is rendered at full viewport size with the
+   correct framing (object-fit: cover, same as the static layer), so
+   it never distorts. Only the clip-path animates: a circle whose
+   center is the activated card's on-screen position and whose radius
+   grows from 0 to the farthest viewport corner, painting the new
+   photo onto the screen in a clean radial wipe. */
+.hero-bg-reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  clip-path: circle(0px at var(--rx, 50%) var(--ry, 50%));
+  animation: hero-bg-reveal var(--reveal-ms, 720ms)
+    cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: clip-path;
+}
+@keyframes hero-bg-reveal {
+  to {
+    clip-path: circle(var(--rr, 100vmax) at var(--rx, 50%) var(--ry, 50%));
+  }
+}
+.hero-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0) 60%
+  );
+  pointer-events: none;
+}
+.hero-thumb-meta {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.hero-thumb-name {
+  font-family: var(--font-heading);
+  font-size: 19px;
+  color: #fff;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg-reveal {
+    animation: none;
+    clip-path: none;
+  }
+  .hero-thumb.is-growing {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Bottom slider controls — prev / next + a thin divider line + counter.
+   They sit dead-centered on the white notch separator below the hero,
+   so the entire scheme uses dark glyphs against the white background. */
+.hero-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.hero-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  background: transparent;
+  color: var(--ink, #111);
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.hero-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.7);
+}
+.hero-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.hero-controls-bar {
+  width: clamp(120px, 18vw, 240px);
+  height: 1px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.hero-counter {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.75);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Slide-change animations — replay each time the keyed element remounts
+   (idx change inside Hero.jsx). */
+@keyframes hero-bg-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes hero-content-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.hero-bg {
+  animation: hero-bg-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-content {
+  animation: hero-content-in 520ms 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg,
+  .hero-content {
+    animation: none;
+  }
+}
+
+/* Curved separator into the white About section. Anchored to the bottom
+   edge of the hero so it sits flush against the boundary regardless of
+   how tall the hero ends up. Taller + larger radius reads as a more
+   intentional design moment than the original 64px ledge. */
+.hero-notch-host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.hero-notch {
+  position: relative;
+  height: 120px;
+  background: var(--bg);
+  border-top-left-radius: 140px;
+  border-top-right-radius: 140px;
+  box-shadow: 0 -22px 60px -14px rgba(0, 0, 0, 0.4);
+}
+/* Subtle highlight along the top of the notch to give the curve depth. */
+.hero-notch::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* ============ ABOUT (LIGHT) ============ */
+.section {
+  padding: 80px 0;
+  background: var(--bg);
+
+  @media (max-width: 1024px) {
+    padding: 60px 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 50px 0;
+  }
+
+  @media (max-width: 600px) {
+    padding: 40px 0;
+  }
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.about-label {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-bottom: 18px;
+}
+.about-body {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  max-width: 480px;
+}
+.about-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+}
+.about-stat {
+  padding-right: 32px;
+  margin-right: 32px;
+  border-right: 1px solid var(--line);
+}
+.about-stat:last-child {
+  border-right: none;
+}
+.about-stat-num {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.about-stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+.btn-pill {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-dark);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.btn-pill:hover {
+  opacity: 0.85;
+}
+.btn-pill-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+}
+
+.about-visual {
+  position: relative;
+  aspect-ratio: 1.25/1;
+  width: 100%;
+}
+.about-img-slot {
+  position: absolute;
+  inset: 0;
+}
+
+/* ============ FEATURED LINEUP (LIGHT) ============ */
+.lineup {
+  padding: 60px 0 80px;
+  background: var(--bg);
+}
+.lineup-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: flex-start;
+  margin-bottom: 36px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+.lineup-title {
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0;
+
+  @media (max-width: 600px) {
+    text-align: center;
+  }
+}
+.lineup-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+
+  @media (max-width: 1024px) {
+    align-items: center;
+    gap: 20px;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.lineup-intro p {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: 1.6;
+  @media (max-width: 600px) {
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+/* Tabs */
+.lineup-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.lineup-tab {
+  position: relative;
+  padding: 4px 0;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.lineup-tab.active {
+  color: var(--text);
+}
+.lineup-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--text);
+}
+
+/* Featured card */
+.featured {
+  position: relative;
+  background: var(--bg-dark);
+  border-radius: 32px;
+  padding: 48px 24px 28px;
+  min-height: 520px;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+/* Black→transparent bottom-to-top gradient over the bg image so the
+   specs (white text) at the bottom always stay readable, regardless of
+   the photo's exposure. */
+.featured::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+}
+/* Bottom column — wraps the vehicle name + specs so they flow as
+   natural siblings inside the flex-end column of .featured. This way
+   the specs grid can grow to 2 rows on narrow viewports without
+   colliding with the watermark above. */
+.featured-bottom {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* Vehicle name — sits just above the specs row, horizontally centered. */
+.featured-watermark {
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Background-image layer — fills the whole card now (was a centered
+   middle slot). Positioned absolute so the specs/nav/CTA float above
+   it via z-index. */
+.featured-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  height: auto;
+  border-radius: inherit;
+  overflow: hidden;
+}
+.featured-img-slot {
+  position: absolute;
+  inset: 0;
+}
+.featured-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.featured-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: grid;
+  place-items: center;
+  z-index: 4;
+  font-size: 16px;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.featured-nav-btn.prev {
+  left: 24px;
+}
+.featured-nav-btn.next {
+  right: 24px;
+}
+.featured-specs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding-top: 22px;
+  color: #fff;
+}
+.featured-spec {
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0 16px;
+}
+.featured-spec:last-child {
+  border-right: none;
+}
+.featured-spec-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+.featured-spec-value {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.featured-cta-floating {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 5;
+}
+
+/* Slider transitions — animations run every time their host element
+   remounts via a fresh `key={current.id}` in Lineup.jsx. The image gets
+   a slightly longer fade + subtle zoom; the text gets a small upward
+   slide so the eye reads name → specs naturally. */
+@keyframes featured-image-in {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes featured-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.featured-image {
+  animation: featured-image-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.featured-watermark {
+  animation: featured-text-in 320ms 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.featured-specs {
+  animation: featured-text-in 320ms 140ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Honour reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .featured-image,
+  .featured-watermark,
+  .featured-specs {
+    animation: none;
+  }
+}
+
+/* ============ BUSINESS / EXPERIENCE GRID ============ */
+.exp {
+  padding: 80px 0;
+  background: var(--bg);
+
+  @media (max-width: 1024px) {
+    padding: 60px 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 50px 0;
+  }
+
+  @media (max-width: 600px) {
+    padding: 40px 0;
+  }
+}
+.exp-title {
+  text-align: center;
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.15;
+  margin-bottom: 40px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+}
+.exp-tile {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--bg-card);
+  aspect-ratio: 4/3;
+}
+.exp-tile.tall {
+  aspect-ratio: 5/6;
+}
+.exp-tile.wide {
+  aspect-ratio: 16/9;
+}
+.exp-tile-slot {
+  position: absolute;
+  inset: 0;
+}
+.exp-tile-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 8px;
+}
+.exp-tile-nav.right {
+  right: 16px;
+  left: auto;
+}
+.exp-tile-nav-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.exp-caption {
+  margin-top: 16px;
+}
+.exp-caption h4 {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-bottom: 6px;
+}
+.exp-caption p {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 480px;
+}
+
+.exp-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.exp-sub-title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+}
+.exp-sub-body {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  max-width: 480px;
+}
+
+/* ============ POWER SWAP / PROCESS (LIGHT) ============ */
+.service {
+  padding: 60px 0 80px;
+  background: var(--bg);
+}
+.service-banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--bg-card);
+  margin-bottom: 28px;
+}
+.service-banner-slot {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+.service-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.service-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.service-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+.service-banner:has(.service-iframe)::after {
+  opacity: 0;
+}
+.service-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  font-size: 28px;
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.service-play:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: #fff;
+}
+.service-play:focus-visible {
+  outline: 3px solid var(--accent, #1976d2);
+  outline-offset: 4px;
+}
+.service-ext {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 6px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease;
+}
+.service-ext:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.service-foot {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 40px;
+  align-items: center;
+}
+.service-foot h3 {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-bottom: 6px;
+}
+.service-foot small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.service-foot p {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ============ NEWS (LIGHT BG, DARK CARDS) ============ */
+.news {
+  padding: 60px 0 80px;
+  background: var(--bg);
+}
+.news-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+.news-title {
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+.news-intro p {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 360px;
+  margin-left: auto;
+  line-height: 1.6;
+}
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.news-card {
+  background: var(--bg-dark);
+  color: var(--text-on-dark);
+  border-radius: 22px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+.news-author {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+.news-card h3 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+  margin-bottom: 16px;
+  color: #fff;
+}
+.news-card p {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.news-card-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.news-card-date {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+}
+.news-card-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 12px;
+}
+
+/* ============ COMMUNITY (DARK) ============ */
+.community {
+  position: relative;
+  padding: 60px 0 0;
+  background: var(--bg);
+}
+.community-card {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  aspect-ratio: 24/9;
+  background: var(--bg-dark);
+}
+.community-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.community-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.45;
+}
+.community-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0.75) 100%
+    ),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+  opacity: 0.5;
+}
+.community-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+  padding: 40px;
+  color: #fff;
+}
+.community-content h2 {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+.community-content p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 440px;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.btn-pill-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--bg-dark);
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.btn-pill-light-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  display: grid;
+  place-items: center;
+}
+
+/* ============ FOOTER (DARK) ============ */
+.footer {
+  background: var(--bg);
+  padding: 60px 0 0;
+  position: relative;
+}
+.footer-inner {
+  background: var(--bg-dark);
+  color: var(--text-on-dark);
+  border-radius: 0;
+  padding: 40px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  padding: 0 56px;
+  max-width: 1280px;
+  margin: 0 auto 40px;
+}
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.footer-logo svg {
+  width: 28px;
+  height: 28px;
+}
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: capitalize;
+}
+.footer-social {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+.footer-social a {
+  transition: color 0.2s;
+}
+.footer-social a:hover {
+  color: #fff;
+}
+.footer-sub {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 16px 0 24px;
+  letter-spacing: 0.04em;
+}
+.footer-marquee {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(80px, 17vw, 260px);
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.06em;
+  line-height: 0.9;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-bottom: 0.05em;
+  padding: 20px 0 0;
+}
+
+/* ============ IMAGE SLOTS ============ */
+image-slot {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+/* Slot frame, dashed ring, and empty-state caption all invisible.
+   Drop / click-to-browse still works (the element keeps its event
+   listeners) — there's just no visible placeholder UI. */
+image-slot::part(frame) {
+  background: transparent;
+  box-shadow: none;
+}
+image-slot::part(ring) {
+  display: none;
+}
+image-slot::part(empty) {
+  display: none;
+}
+
+/* Caption color tweak only — dark backgrounds need light text. */
+.hero-car-slot image-slot,
+.community-bg image-slot {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* ============ RESPONSIVE ============ */
+/* On narrower desktops + tablets + mobile the hero side-by-side layout
+   would crowd the title and thumbs (the 5-card rail eats ~760px so we
+   need at least ~1400px to keep the headline column breathing), so we
+   stack the rail under the content and let it scroll horizontally. */
+@media (max-width: 1400px) {
+  .hero-content {
+    position: static;
+    max-width: none;
+    margin-bottom: 32px;
+    padding-right: 0;
+  }
+  .hero-thumbs {
+    position: static;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    scrollbar-width: none;
+  }
+  .hero-thumbs::-webkit-scrollbar {
+    display: none;
+  }
+  .hero-thumb {
+    width: 120px;
+    height: 175px;
+  }
+  .hero-stage {
+    padding: 64px 56px 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+  }
+}
+
+/* Notch radius dialled down at each common viewport bucket — a 140px
+   sweep is dramatic on a 1440px desktop but reads as a low ceiling on
+   narrow viewports, so we taper the curve as the screen shrinks. */
+@media (max-width: 1024px) {
+  .hero-notch {
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+  }
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    padding: 0 24px;
+  }
+  .nav {
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .nav-left,
+  .nav-right {
+    display: none;
+  }
+  .hero-stage {
+    padding: 56px 24px 170px;
+  }
+  .hero-title {
+    font-size: clamp(48px, 13vw, 92px);
+  }
+  .hero-controls {
+    bottom: 26px;
+    gap: 14px;
+  }
+  .hero-controls-bar {
+    width: 80px;
+  }
+  .about-grid,
+  .lineup-head,
+  .news-head,
+  .service-foot {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .exp-grid,
+  .exp-row2 {
+    grid-template-columns: 1fr;
+  }
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+  .featured-specs {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 0;
+  }
+  .featured-spec {
+    padding: 8px 0;
+  }
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+  .footer-social {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-notch {
+    border-top-left-radius: 70px;
+    border-top-right-radius: 70px;
+  }
+}
+
+@media (max-width: 425px) {
+  .hero-notch {
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+  }
+}
