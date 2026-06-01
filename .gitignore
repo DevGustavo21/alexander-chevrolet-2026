@@ -21,6 +21,7 @@
 # image upscaling tooling (large binaries, kept locally)
 /tools/upscale/
 /tools/tmp/
+/tools/screenshots/
 
 # debug
 npm-debug.log*

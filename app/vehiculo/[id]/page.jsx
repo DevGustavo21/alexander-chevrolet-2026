@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Footer from '@/app/components/Footer';
 import Logo from '@/app/components/Logo';
 import { VEHICLES } from '@/lib/vehicles';
 import {
@@ -35,12 +36,29 @@ export default async function VehiclePage({ params }) {
   const vehicle = VEHICLES.find((v) => v.id === id);
   if (!vehicle) notFound();
 
-  const gallery =
-    vehicle.imagenes && vehicle.imagenes.length > 0
-      ? vehicle.imagenes
-      : vehicle.imagen
-        ? [vehicle.imagen]
-        : [];
+  // Gallery groups: a vehicle can expose `imagenesExterior` /
+  // `imagenesInterior` (preferred — splits the gallery into two
+  // labelled sections) or the legacy `imagenes` array (rendered as a
+  // single ungrouped section). Falls back to the hero image if no
+  // gallery data is present.
+  const galleryGroups = (() => {
+    const exterior = vehicle.imagenesExterior || [];
+    const interior = vehicle.imagenesInterior || [];
+    if (exterior.length || interior.length) {
+      const groups = [];
+      if (exterior.length) groups.push({ id: 'exterior', label: 'Exterior', items: exterior });
+      if (interior.length) groups.push({ id: 'interior', label: 'Interior', items: interior });
+      return groups;
+    }
+    if (vehicle.imagenes?.length) {
+      return [{ id: 'all', label: null, items: vehicle.imagenes }];
+    }
+    if (vehicle.imagen) {
+      return [{ id: 'all', label: null, items: [vehicle.imagen] }];
+    }
+    return [];
+  })();
+  const hasGallery = galleryGroups.some((g) => g.items.length > 0);
   const highlights = vehicle.destacado.split(' · ');
 
   const sameCategory = VEHICLES.filter(
@@ -54,6 +72,7 @@ export default async function VehiclePage({ params }) {
   const overviewText = buildOverview(vehicle);
 
   return (
+    <div className="page">
     <main className="vp">
       <div className="vp-top">
         <nav className="nav is-light">
@@ -167,8 +186,8 @@ export default async function VehiclePage({ params }) {
         </div>
       </section>
 
-      {/* GALLERY BENTO */}
-      {gallery.length > 0 && (
+      {/* GALLERY */}
+      {hasGallery && (
         <section className="vp-gallery">
           <div className="wrap">
             <div className="vp-gallery-head">
@@ -179,31 +198,94 @@ export default async function VehiclePage({ params }) {
               </h2>
               <p className="vp-h2-sub">
                 Mirá tu próximo {vehicle.nombre.split(' ')[0]} desde
-                todos los ángulos.
+                todos los ángulos — por dentro y por fuera.
               </p>
             </div>
 
-            <div
-              className={
-                'vp-bento count-' + Math.min(gallery.length, 5)
-              }
-            >
-              {gallery.slice(0, 5).map((src, i) => (
-                <figure className={'vp-bento-item slot-' + (i + 1)} key={src}>
-                  <img
-                    src={src}
-                    alt={`${vehicle.nombre} — ${i + 1}`}
-                    loading="lazy"
-                  />
-                  <figcaption className="vp-bento-cap">
-                    {bentoCaption(i)}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
+            {galleryGroups.map((group) => (
+              <div className="vp-gallery-group" key={group.id}>
+                {group.label && (
+                  <div className="vp-gallery-group-head">
+                    <span className="vp-gallery-group-label">
+                      {group.label}
+                    </span>
+                    <span className="vp-gallery-group-count">
+                      {String(group.items.length).padStart(2, '0')}
+                    </span>
+                    <span className="vp-gallery-group-line" />
+                  </div>
+                )}
+                <div
+                  className="vp-gallery-grid"
+                  data-count={Math.min(group.items.length, 6)}
+                >
+                  {group.items.map((src, i) => (
+                    <figure className="vp-gallery-item" key={src}>
+                      <img
+                        src={src}
+                        alt={`${vehicle.nombre} — ${group.label || 'galería'} ${i + 1}`}
+                        loading="lazy"
+                      />
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}
+
+      {/* CTA */}
+      <section className="vp-cta">
+        <div className="wrap vp-cta-inner">
+          <div className="vp-cta-left">
+            <div className="vp-cta-copy">
+              <span className="vp-cta-eyebrow">Listo para llevártelo</span>
+              <h2 className="vp-cta-title">
+                Cotizá el {vehicle.nombre} hoy,
+                <br />
+                o probálo este fin de semana.
+              </h2>
+              <p>
+                Te respondo personalmente por WhatsApp — sin call centers,
+                sin formularios. Coordinamos cotización con financiamiento o
+                agendamos una prueba de manejo.
+              </p>
+            </div>
+            <div className="vp-cta-actions">
+              <a
+                href={waUrl(waVehicleMessage(vehicle.nombre))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="vp-cta-btn primary"
+              >
+                <span>Cotizar por WhatsApp</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a
+                href={waUrl(waTestDriveMessage(vehicle.nombre))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="vp-cta-btn secondary"
+              >
+                <span>Agendar prueba de manejo</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+          <aside className="vp-cta-portrait">
+            <div className="vp-cta-portrait-meta">
+              <span className="vp-cta-portrait-role">Tu asesor Chevrolet</span>
+              <span className="vp-cta-portrait-name">Alexander Alvarado</span>
+            </div>
+            <img
+              src="/team/alex.png"
+              alt="Alexander Alvarado, asesor Chevrolet"
+              className="vp-cta-portrait-img"
+            />
+          </aside>
+        </div>
+      </section>
 
       {/* RELATED */}
       {related.length > 0 && (
@@ -283,45 +365,9 @@ export default async function VehiclePage({ params }) {
         </section>
       )}
 
-      {/* CTA */}
-      <section className="vp-cta">
-        <div className="wrap vp-cta-inner">
-          <div className="vp-cta-copy">
-            <span className="vp-cta-eyebrow">Listo para llevártelo</span>
-            <h2 className="vp-cta-title">
-              Cotizá el {vehicle.nombre} hoy,
-              <br />
-              o probálo este fin de semana.
-            </h2>
-            <p>
-              Te respondo personalmente por WhatsApp — sin call centers, sin
-              formularios. Coordinamos cotización con financiamiento o
-              agendamos una prueba de manejo.
-            </p>
-          </div>
-          <div className="vp-cta-actions">
-            <a
-              href={waUrl(waVehicleMessage(vehicle.nombre))}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="vp-cta-btn primary"
-            >
-              <span>Cotizar por WhatsApp</span>
-              <span aria-hidden="true">↗</span>
-            </a>
-            <a
-              href={waUrl(waTestDriveMessage(vehicle.nombre))}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="vp-cta-btn secondary"
-            >
-              <span>Agendar prueba de manejo</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-      </section>
     </main>
+    <Footer />
+    </div>
   );
 }
 
@@ -554,13 +600,3 @@ function copyFor(text) {
   return COPY_BY_ICON.star;
 }
 
-const BENTO_CAPS = [
-  'Diseño exterior auténtico',
-  'Detalle frontal y firma LED',
-  'Cabina pensada para vos',
-  'Confort de segunda fila',
-  'Estilo en cada ángulo',
-];
-function bentoCaption(i) {
-  return BENTO_CAPS[i % BENTO_CAPS.length];
-}

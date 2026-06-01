@@ -1,5 +1,6 @@
 import Script from 'next/script';
 import './globals.css';
+import SmoothScroll from './components/SmoothScroll';
 
 export const metadata = {
   title: 'Alexander Alvarado · Asesor Chevrolet Nicaragua',
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
       */}
       <body suppressHydrationWarning>
         <Script src="/image-slot.js" strategy="beforeInteractive" />
+        <SmoothScroll />
         {children}
       </body>
     </html>
