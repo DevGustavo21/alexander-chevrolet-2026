@@ -80,8 +80,6 @@ export default function Footer() {
         </div>
         <div className="footer-sub">
           <span>© 2026 Alexander Alvarado</span>
-          <span>Términos & Condiciones</span>
-          <span>Política de Privacidad</span>
         </div>
         <div className="footer-marquee">ILIMITADO</div>
       </div>
