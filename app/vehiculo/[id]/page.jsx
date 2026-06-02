@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Footer from '@/app/components/Footer';
 import Logo from '@/app/components/Logo';
+import MobileNav from '@/app/components/MobileNav';
 import { VEHICLES } from '@/lib/vehicles';
 import {
   waUrl,
@@ -89,6 +90,15 @@ export default async function VehiclePage({ params }) {
             <Link href="/#catalog">Catálogo</Link>
             <Link href="/#contact">Contacto</Link>
           </div>
+          <MobileNav
+            variant="light"
+            links={[
+              { label: 'Sobre mí', href: '/#about' },
+              { label: 'Cómo trabajo', href: '/#process' },
+              { label: 'Catálogo', href: '/#catalog' },
+              { label: 'Contacto', href: '/#contact' },
+            ]}
+          />
         </nav>
       </div>
 

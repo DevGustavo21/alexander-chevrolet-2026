@@ -19,6 +19,33 @@ export default function SmoothScroll() {
   const lenisRef = useRef(null);
   const pathname = usePathname();
 
+  // Toggle `html.is-scrolled` so the fixed nav can swap from transparent
+  // (over the dark hero) to a blurred white bar (over the rest of the
+  // page). Lives in its own effect so it runs even for visitors with
+  // prefers-reduced-motion (who skip the Lenis init below). 24px feels
+  // like a natural threshold — small enough that any deliberate scroll
+  // triggers the swap, large enough that an iOS rubber-band bounce at
+  // the top doesn't flicker it.
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const html = document.documentElement;
+    const SCROLL_THRESHOLD = 24;
+    let scrolled = false;
+    const update = () => {
+      const y = window.scrollY || window.pageYOffset || 0;
+      const next = y > SCROLL_THRESHOLD;
+      if (next === scrolled) return;
+      scrolled = next;
+      html.classList.toggle('is-scrolled', next);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', update);
+      html.classList.remove('is-scrolled');
+    };
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
 
@@ -36,6 +63,12 @@ export default function SmoothScroll() {
     });
     lenisRef.current = lenis;
 
+    // Negative Lenis offset so an anchor target lands ~NAV_GUTTER pixels
+    // below the viewport top instead of flush with it — otherwise the
+    // section title sits underneath the fixed nav. Matches the CSS
+    // scroll-padding-top fallback in globals.css.
+    const NAV_GUTTER = 88;
+
     let rafId;
     const raf = (time) => {
       lenis.raf(time);
@@ -51,7 +84,7 @@ export default function SmoothScroll() {
       const target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target, { offset: 0, duration: 1.2 });
+      lenis.scrollTo(target, { offset: -NAV_GUTTER, duration: 1.2 });
       history.replaceState(null, '', href);
     };
     document.addEventListener('click', onClick);

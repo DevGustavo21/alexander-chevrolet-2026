@@ -45,6 +45,19 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Anchor jumps (#about, etc.) should land below the fixed 72px nav so
+   the section heading isn't clipped. Lenis-intercepted clicks use a
+   matching numeric offset in SmoothScroll.jsx; this covers native
+   browser scroll-restoration / first-paint hash navigation. */
+html {
+  scroll-padding-top: 88px;
+}
+@media (max-width: 900px) {
+  html {
+    scroll-padding-top: 76px;
+  }
+}
+
 /* ===== Lenis smooth scroll =====
    The library mounts an `html.lenis` class once initialised. Inside
    that class Lenis takes over scrolling for the page, so we disable
@@ -109,22 +122,70 @@ a {
   overflow: hidden;
 }
 
-/* NAV embebido en hero */
+/* NAV fijo al top en todas las páginas.
+   Full-width fixed bar that's transparent over the dark hero and
+   switches to a white-with-blur theme as soon as the page scrolls
+   (toggled via html.is-scrolled — see SmoothScroll.jsx). The vehicle
+   detail page opts into the white theme permanently via .is-light.
+   Horizontal padding uses max() to align the content with a centered
+   1280px column, matching the rest of the layout, without needing an
+   extra wrapping element. */
 .nav {
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 0 56px;
-  max-width: 1280px;
-  margin: 0 auto 24px;
+  padding-left: max(56px, calc(50% - 640px + 56px));
+  padding-right: max(56px, calc(50% - 640px + 56px));
+  margin: 0;
+  max-width: none;
+  height: 72px;
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  box-shadow: 0 0 0 0 transparent;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease,
+    -webkit-backdrop-filter 0.3s ease,
+    backdrop-filter 0.3s ease;
+}
+
+/* Scrolled-past-hero state on the home nav: near-solid white bar with
+   a soft drop shadow so the header reads as a clearly separate layer
+   over the white sections below (a translucent blur alone disappeared
+   against the page background). Vehicle page already uses .is-light so
+   we exclude it here — its rules below win regardless of scroll. */
+html.is-scrolled .nav:not(.is-light) {
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.18);
+  color: var(--text-muted);
+}
+html.is-scrolled .nav:not(.is-light) a {
+  color: var(--text-muted);
+}
+html.is-scrolled .nav:not(.is-light) a:hover {
+  color: var(--text);
+}
+html.is-scrolled .nav:not(.is-light) .nav-logo {
+  color: var(--text);
+}
+html.is-scrolled .nav:not(.is-light) .mnav-btn:not(.is-light) {
+  color: var(--text);
 }
 .nav-left,
 .nav-right {
@@ -191,9 +252,6 @@ a {
       rgba(0, 0, 0, 0.35) 100%
     ),
     linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 50%);
-}
-.hero .nav {
-  z-index: 5;
 }
 .hero-stage {
   position: relative;
@@ -1606,8 +1664,10 @@ image-slot::part(empty) {
     padding: 0 24px;
   }
   .nav {
-    padding: 0 24px;
+    padding-left: 20px;
+    padding-right: 20px;
     gap: 16px;
+    height: 64px;
   }
   .nav-left,
   .nav-right {
@@ -1675,15 +1735,29 @@ image-slot::part(empty) {
   min-height: 100vh;
 }
 
-/* Top wrapper mimics .hero padding-top so the nav sits at the same
-   vertical rhythm as on the home page. */
+/* Vertical clearance for the fixed nav (72px on desktop, 64px on
+   mobile) plus some breathing space so the page title doesn't kiss the
+   bar. The nav itself is fixed and out of flow — this padding is what
+   pushes the rest of the vehicle page below it. */
 .vp-top {
-  padding: 32px 0 0;
+  padding: 96px 0 0;
+}
+@media (max-width: 900px) {
+  .vp-top {
+    padding-top: 84px;
+  }
 }
 /* Light-on-light variant of the home `.nav` — same layout/spacing,
-   inverted color palette. Lives here so the home nav stays untouched. */
+   inverted color palette. Used on the vehicle detail page where the
+   background is white from the first pixel; always wears the blurred
+   white bar regardless of scroll position. */
 .nav.is-light {
   color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.18);
 }
 .nav.is-light a {
   color: var(--text-muted);
@@ -2555,5 +2629,246 @@ image-slot::part(empty) {
   .vp-related-img img {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ============ MOBILE NAV ============
+   Hamburger + full-screen overlay. The desktop .nav-left / .nav-right
+   are hidden under 900px (see the responsive block above); this
+   component fills that gap. The hamburger sits inside .nav as a 4th
+   child and is itself display:none on desktop, so the rendered DOM is
+   identical on >900px viewports. */
+.mnav-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin-right: -10px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.92);
+  -webkit-tap-highlight-color: transparent;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.mnav-btn.is-light {
+  color: var(--text);
+}
+.mnav-btn:hover {
+  opacity: 0.7;
+}
+.mnav-btn svg {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .mnav-btn {
+    display: inline-flex;
+  }
+}
+
+/* Overlay */
+.mnav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg-dark);
+  color: var(--text-on-dark);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 36px;
+  visibility: hidden;
+  opacity: 0;
+  /* Slide + fade in. transform on the panel rather than the backdrop
+     so the dark fill snaps as the panel slides up — feels native. */
+  transform: translateY(-12px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.32s;
+  overflow: hidden;
+}
+.mnav-overlay.is-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.28s ease,
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0s;
+}
+/* Subtle radial vignette so the link column reads against the flat dark
+   fill — same vibe as the hero gradient. */
+.mnav-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 80% at 50% 0%,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0) 60%
+    );
+}
+
+.mnav-overlay-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+.mnav-overlay-logo {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.mnav-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s ease;
+}
+.mnav-close:hover {
+  opacity: 0.7;
+}
+.mnav-close svg {
+  display: block;
+}
+
+/* Link list */
+.mnav-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  padding-top: 8px;
+}
+.mnav-link {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 4px;
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(40px, 11vw, 64px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* Fade + slide each link in. The component sets a per-item
+     transition-delay inline so they stagger; closing zeros the delay so
+     they all fade out together. */
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.36s ease, transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mnav-overlay.is-open .mnav-link {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mnav-link-index {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-right: 2px;
+  align-self: center;
+  transform: translateY(-0.45em);
+}
+.mnav-link-label {
+  flex: 1;
+}
+.mnav-link-arrow {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  align-self: center;
+  transform: translateY(-0.7em);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.mnav-link:hover .mnav-link-arrow,
+.mnav-link:active .mnav-link-arrow {
+  color: #fff;
+  transform: translate(2px, calc(-0.7em - 2px));
+}
+
+/* Footer CTA */
+.mnav-foot {
+  position: relative;
+  z-index: 1;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mnav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--bg-dark);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+}
+.mnav-cta-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+}
+.mnav-foot-note {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* iOS Safari quirk: 100vh includes the address bar so the bottom CTA
+   can sit under it. Dynamic viewport unit hugs the visible area. */
+@supports (height: 100dvh) {
+  .mnav-overlay {
+    height: 100dvh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mnav-overlay,
+  .mnav-link,
+  .mnav-link-arrow {
+    transition: opacity 0.12s ease !important;
+    transform: none !important;
   }
 }

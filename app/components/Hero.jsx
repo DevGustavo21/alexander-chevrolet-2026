@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { VEHICLES } from '@/lib/vehicles';
 import { waUrl, waVehicleMessage } from '@/lib/contact';
 import Logo from './Logo';
+import MobileNav from './MobileNav';
 
 // Curated hero lineup — the premium / largest / most expensive models
 // (Silverado, Tahoe, Suburban) so the landing page leads with the
@@ -202,6 +203,7 @@ export default function Hero() {
           <a href="#catalog">Catálogo</a>
           <a href="#contact">Contacto</a>
         </div>
+        <MobileNav />
       </nav>
 
       <div className="hero-stage">
