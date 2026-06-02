@@ -1468,6 +1468,49 @@ html.is-scrolled .nav:not(.is-light) .mnav-btn:not(.is-light) {
   place-items: center;
 }
 
+/* Mobile: drop the 24:9 aspect-ratio (the card would be ~120px tall on
+   a phone and clip the headline + CTA), and pull .community-content
+   out of absolute positioning so the card grows to fit its content
+   naturally. The bg image stays absolute behind it. */
+@media (max-width: 900px) {
+  .community-card {
+    aspect-ratio: auto;
+    border-radius: 24px;
+  }
+  .community-content {
+    position: relative;
+    inset: auto;
+    padding: 64px 28px;
+  }
+  .community-content h2 {
+    font-size: clamp(28px, 7vw, 36px);
+    margin-bottom: 14px;
+  }
+  .community-content p {
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .community {
+    padding-top: 40px;
+  }
+  .community-card {
+    border-radius: 20px;
+  }
+  .community-content {
+    padding: 56px 22px;
+  }
+  .community-content h2 {
+    font-size: clamp(26px, 8vw, 32px);
+  }
+  .community-content p {
+    font-size: 14px;
+    max-width: 100%;
+  }
+}
+
 /* ============ FOOTER (DARK) ============ */
 .footer {
   background: var(--bg);
